@@ -169,32 +169,37 @@ UserProgKernel::SelfTest() {
 }
 
 
-void
-ForkExecute(Thread *t)
+void ForkExecute(Thread *t)
 {
     // cout << "Thread: " << (void *) t << endl;
     //<TODO>
     // When Thread t goes to Running state in the first time, its file should be loaded & executed.
     // Hint: This function would not be called until Thread t is on running state.
+
+
     //<TODO>
 }
 
-int 
-UserProgKernel::InitializeOneThread(char* name, int priority, int burst_time)
+int UserProgKernel::InitializeOneThread(char* name, int priority, int burst_time)
 {
     //<TODO>
     // When each execfile comes to Exec function, Kernel helps to create a thread for it.
     // While creating a new thread, thread should be initialized, and then forked.
     t[threadNum]->space = new AddrSpace();
+
+    t[threadNum]->setPriority(priority);//Jess added
+    t[threadNum]->setRemainingBurstTime(burst_time);//Jess added
+
     t[threadNum]->Fork((VoidFunctionPtr) &ForkExecute, (void *)t[threadNum]);
+    
+
     //<TODO>
 
     threadNum++;
     return threadNum - 1;
 }
 
-void 
-UserProgKernel::InitializeAllThreads()
+void UserProgKernel::InitializeAllThreads()
 {
     for (int i = 1; i <= execfileNum; i++){
         // cout << "execfile[" << i << "]: " << execfile[i] << " start " << endl;

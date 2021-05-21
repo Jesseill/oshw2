@@ -91,8 +91,7 @@ Scheduler::ReadyToRun (Thread *thread)
 //	Thread is removed from the ready list.
 //----------------------------------------------------------------------
 
-Thread *
-Scheduler::FindNextToRun ()
+Thread *Scheduler::FindNextToRun ()
 {
     ASSERT(kernel->interrupt->getLevel() == IntOff);
 

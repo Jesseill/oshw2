@@ -93,8 +93,7 @@ Thread::~Thread()
 //	"arg" is a single argument to be passed to the procedure.
 //----------------------------------------------------------------------
 
-void 
-Thread::Fork(VoidFunctionPtr func, void *arg)
+void Thread::Fork(VoidFunctionPtr func, void *arg)
 {
     Interrupt *interrupt = kernel->interrupt;
     Scheduler *scheduler = kernel->scheduler;
@@ -104,9 +103,8 @@ Thread::Fork(VoidFunctionPtr func, void *arg)
     
     StackAllocate(func, arg);
 
-    oldLevel = interrupt->SetLevel(IntOff);
-    scheduler->ReadyToRun(this);	// ReadyToRun assumes that interrupts 
-					// are disabled!
+    oldLevel = interrupt->SetLevel(IntOff); 
+    scheduler->ReadyToRun(this);	// ReadyToRun assumes that interrupts are disabled!			
     (void) interrupt->SetLevel(oldLevel);
 }    
 
@@ -217,7 +215,22 @@ Thread::Yield ()
     // 1. Put current_thread in running state to ready state
     // 2. Then, find next thread from ready state to push on running state
     // 3. After resetting some value of current_thread, then context switch
+
+    kernel->scheduler->ReadyToRun(kernel->currentThread);//Jess added
+    nextThread = kernel->scheduler->FindNextToRun();//Jess added
+    if(nextThread!=NULL) //Jess added
+    {
+        	kernel->scheduler->ReadyToRun(this);
+	        kernel->scheduler->Run(nextThread, FALSE); //uncertain
+    }
+
+    
+    
+    
     kernel->scheduler->Run(nextThread, finishing);
+
+
+
     //<TODO>
 
     (void) kernel->interrupt->SetLevel(oldLevel);
