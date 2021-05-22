@@ -132,7 +132,7 @@ class Thread {
     int getRemainingBurstTime() {return RemainingBurstTime;}
 
     int getRunTime(){return RunTime;}
-    int setRuntime(int t){RunTime = t;}
+    int setRunTime(int t){RunTime = t;}
 
     int getRRTime(){return RRtime;}
     int setRRTime(int rr){ RRTime =rr; }
