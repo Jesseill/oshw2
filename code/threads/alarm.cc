@@ -53,7 +53,7 @@ Alarm::CallBack()
     MachineStatus status = interrupt->getStatus();
     
 
-    //<TODO>
+    //<TODO ?>
 
 
     // In each 100 ticks,   
@@ -64,22 +64,23 @@ Alarm::CallBack()
     // 2. Update RunTime & RRTime
     // 3. Check Round Robin
 
-    //this method evoke each TimerTicks -> TimerTicks = 100
+    //this method is evoked each TimerTicks -> TimerTicks = 100
 
     
     kernel->scheduler->UpdatePriority();
+    //how to update run time in idlemode?? powder help>< 
     if(status != IdleMode ){
         kernel->currentThread->setRunTime(kernel->currentThread->getRunTime()+100); // when userTick reset??
 
         if( kernel->currentThread->getPriority() < 50){// in L3
         
-            if(kernel->currentThread->getRunTime()){
-
+            if(kernel->currentThread->getRunTime()>=200){
+                kernel->interrupt->YieldOnReturn();
             }
         }
     }
 
-    //<TODO>
+    //<TODO ?>
     
      //    if (status == IdleMode) {    // is it time to quit?
  //        if (!interrupt->AnyFutureInterrupts()) {
