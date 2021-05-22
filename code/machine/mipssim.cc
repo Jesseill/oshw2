@@ -48,8 +48,7 @@ class Instruction {
 //	times concurrently -- one for each thread executing user code.
 //----------------------------------------------------------------------
 
-void
-Machine::Run()
+void Machine::Run()
 {
     Instruction *instr = new Instruction;  // storage for decoded instruction
 

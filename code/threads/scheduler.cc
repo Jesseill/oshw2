@@ -34,15 +34,27 @@
 //<TODO>
 // Declare sorting rule of SortedList for L1 & L2 ReadyQueue
 // Hint: Funtion Type should be "static int"
+
+// Jess added ***very uncertain***
+static int sortingRule(){
+
+}
+	
 //<TODO>
 
 Scheduler::Scheduler()
 {
 //	schedulerType = type;
     // readyList = new List<Thread *>; 
-    //<TODO>
+    //<TODO DONE>
     // Initialize L1, L2, L3 ReadyQueue
-    //<TODO>
+
+    // all added by Jess
+    L1ReadyQueue = new SortedList<Thread* >;
+    L2ReadyQueue = new SortedList<Thread* >;
+    L3ReadyQueue = new List<Thread*>;
+
+    //<TODO DONE>
 	toBeDestroyed = NULL;
 } 
 
@@ -53,9 +65,14 @@ Scheduler::Scheduler()
 
 Scheduler::~Scheduler()
 { 
-    //<TODO>
+    //<TODO DONE>
     // Remove L1, L2, L3 ReadyQueue
-    //<TODO>
+    // all added by Jess
+    delete L1ReadyQueue;
+    delete L2ReadyQueue;
+    delete L3ReadyQueue;
+
+    //<TODO DONE>
     // delete readyList; 
 } 
 
@@ -71,15 +88,34 @@ void
 Scheduler::ReadyToRun (Thread *thread)
 {
     ASSERT(kernel->interrupt->getLevel() == IntOff);
-    // DEBUG(dbgThread, "Putting thread on ready list: " << thread->getName());
+    DEBUG(dbgThread, "Putting thread on ready list: " << thread->getName());
 
     Statistics* stats = kernel->stats;
-    //<TODO>
+    //<TODO ?>
     // According to priority of Thread, put them into corresponding ReadyQueue.
     // After inserting Thread into ReadyQueue, don't forget to reset some values.
     // Hint: L1 ReadyQueue is preemptive SRTN(Shortest Remaining Time Next).
     // When putting a new thread into L1 ReadyQueue, you need to check whether preemption or not.
-    //<TODO>
+
+    // below all added by Jess
+
+    int prio = thread->getPriority();
+    
+    //reset what value??? 
+
+    if(prio > 99){ // 100~149 in L1
+        L1ReadyQueue->Insert(thread); //uncertain
+
+    }else if(prio > 49){ //50~99 in L2
+        L2ReadyQueue->Insert(thread); //uncertain too
+
+    }else{ // 0~49 L3
+        L3ReadyQueue->Append(thread);
+
+    }
+
+
+    //<TODO ?>
     // readyList->Append(thread);
 }
 

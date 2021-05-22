@@ -111,7 +111,7 @@ class Thread {
     char* getName() { return (name); }
     void Print() { cout << name; }
     void SelfTest();		// test whether thread impl is working
-    //<TODO>
+    //<TODO DONE>
     // Set & Get the value in Class Thread
     // 1. get ID
     // 2. set/get Priority
@@ -121,7 +121,7 @@ class Thread {
     // 6. set/get RRTime
 
     int getID(){return ID};
-    
+
     int setPriority(int p){ Priority = p;}
     int getPriority() {return Priority;}
 
@@ -138,7 +138,7 @@ class Thread {
     int setRRTime(int rr){ RRTime =rr; }
 
 
-    //<TODO>
+    //<TODO DONE>
 
   private:
     // some of the private data for this class is listed above

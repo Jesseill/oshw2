@@ -120,8 +120,7 @@ Interrupt::ChangeLevel(IntStatus old, IntStatus now)
 //	"now" -- the new interrupt status
 //----------------------------------------------------------------------
 
-IntStatus
-Interrupt::SetLevel(IntStatus now)
+IntStatus Interrupt::SetLevel(IntStatus now)
 {
     IntStatus old = level;
     

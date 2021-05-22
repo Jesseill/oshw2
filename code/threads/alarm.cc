@@ -59,8 +59,11 @@ Alarm::CallBack()
     // In each 100 ticks, 
     
     // 1. Update Priority
+    if(kernel->stats->totalTicks%400==0)
+        kernel->currentThread->setPriority(kernel->currentThread->getPriority()+10);
 
     // 2. Update RunTime & RRTime
+    kernel->currentThread->setRunTime(kernel->stats->userTicks);
 
     // 3. Check Round Robin
 

@@ -32,14 +32,28 @@ UserProgKernel::UserProgKernel(int argc, char **argv)
 		    debugUserProg = TRUE;
 		}
 		else if (strcmp(argv[i], "-e") == 0) {
-			execfile[++execfileNum]= argv[++i];
+			execfile[++execfileNum]= argv[++i]; // start by 1 !!
 		}
-		//<TODO>
+		//<TODO DONE>
         // Get execfile & its priority & burst time from argv, then save them.
 		else if (strcmp(argv[i], "-epb") == 0) {
+            if (i + 3 < argc) {
+                execfile[++execfileNum]= argv[++i];
+                cout << execfile[execfileNum] << "\n";
+
+                char *priorityStr = argv[++i];
+                int pri = atoi(priorityStr);
+                if(pri >= 0 && pri <= 149)
+                    threadPriority[execfileNum] = pri;
+                
+                char *burstTimeStr = argv[++i];
+                int burst = atoi(burstTimeStr);
+                threadRemainingBurstTime[execfileNum] = burst;
+            }
+
 
 	    }
-	    //<TODO>
+	    //<TODO DONE >
 	    else if (strcmp(argv[i], "-u") == 0) {
 			cout << "===========The following argument is defined in userkernel.cc" << endl;
 			cout << "Partial usage: nachos [-s]\n";
@@ -172,28 +186,34 @@ UserProgKernel::SelfTest() {
 void ForkExecute(Thread *t)
 {
     // cout << "Thread: " << (void *) t << endl;
-    //<TODO>
+    //<TODO DONE>
     // When Thread t goes to Running state in the first time, its file should be loaded & executed.
     // Hint: This function would not be called until Thread t is on running state.
+    if(t!=NULL && t->getName()!=NULL && t->space!=NULL)
+    {
+        t->space->Execute(t->getName());
+    }
 
-
-    //<TODO>
+    //<TODO DONE>
 }
 
 int UserProgKernel::InitializeOneThread(char* name, int priority, int burst_time)
 {
-    //<TODO>
+    //<TODO DONE>
     // When each execfile comes to Exec function, Kernel helps to create a thread for it.
     // While creating a new thread, thread should be initialized, and then forked.
-    t[threadNum]->space = new AddrSpace();
 
+  
+    t[threadNum] = new Thread(name, threadNum );//Jess added 
+
+    t[threadNum]->space = new AddrSpace();
     t[threadNum]->setPriority(priority);//Jess added
     t[threadNum]->setRemainingBurstTime(burst_time);//Jess added
 
     t[threadNum]->Fork((VoidFunctionPtr) &ForkExecute, (void *)t[threadNum]);
     
 
-    //<TODO>
+    //<TODO DONE>
 
     threadNum++;
     return threadNum - 1;

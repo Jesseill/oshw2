@@ -211,27 +211,24 @@ Thread::Yield ()
     
     DEBUG(dbgThread, "Yielding thread: " << name << ", ID: " << ID);
     
-    //<TODO>
+    //<TODO ?>
     // 1. Put current_thread in running state to ready state
+    kernel->scheduler->ReadyToRun(this);
     // 2. Then, find next thread from ready state to push on running state
+    nextThread = kernel->scheduler->FindNextToRun();
     // 3. After resetting some value of current_thread, then context switch
-
-    kernel->scheduler->ReadyToRun(kernel->currentThread);//Jess added
-    nextThread = kernel->scheduler->FindNextToRun();//Jess added
     if(nextThread!=NULL) //Jess added
     {
-        	kernel->scheduler->ReadyToRun(this);
+        	this->setRunTime(0);
 	        kernel->scheduler->Run(nextThread, FALSE); //uncertain
     }
 
-    
-    
     
     kernel->scheduler->Run(nextThread, finishing);
 
 
 
-    //<TODO>
+    //<TODO ?>
 
     (void) kernel->interrupt->SetLevel(oldLevel);
 }
