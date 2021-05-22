@@ -108,8 +108,7 @@ SynchConsoleOutput::PutChar(char ch)
 }
 
 //<REPORT>
-void 
-SynchConsoleOutput::PutInt(int value){
+void SynchConsoleOutput::PutInt(int value){
     char str[10];
     int index = 0;
     sprintf(str, "%d\r\n\0", value);

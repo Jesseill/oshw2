@@ -213,18 +213,27 @@ Thread::Yield ()
     
     //<TODO ?>
     // 1. Put current_thread in running state to ready state
-    kernel->scheduler->ReadyToRun(this);
+    
     // 2. Then, find next thread from ready state to push on running state
-    nextThread = kernel->scheduler->FindNextToRun();
+  
     // 3. After resetting some value of current_thread, then context switch
-    if(nextThread!=NULL) //Jess added
-    {
-        	this->setRunTime(0);
-	        kernel->scheduler->Run(nextThread, FALSE); //uncertain
+
+        // change order to 1-1 on repo
+    nextThread = kernel->scheduler->FindNextToRun();
+       
+    if(nextThread!=NULL) 
+    {   
+            kernel->scheduler->ReadyToRun(this);
+            //update remaining_burst_time
+            this->setRemainingBurstTime(this->getRemainingBurstTime() - this->getRunTime());
+            // rrtime????wait time??        
+            //set run time
+            this->setRunTime(0);
+	        kernel->scheduler->Run(nextThread, !this->getRemainingBurstTime()); //uncertain
     }
 
     
-    kernel->scheduler->Run(nextThread, finishing);
+    //kernel->scheduler->Run(nextThread, finishing);
 
 
 
@@ -272,6 +281,15 @@ Thread::Sleep (bool finishing)
     // , and determine finishing on Scheduler::Run(nextThread, finishing), not here.
     // 1. Update RemainingBurstTime
     // 2. Reset some value of current_thread, then context switch
+    
+
+
+
+
+    //context switch should print something
+
+
+
     kernel->scheduler->Run(nextThread, finishing);
     //<TODO>
 }

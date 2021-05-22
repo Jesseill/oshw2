@@ -56,16 +56,28 @@ Alarm::CallBack()
     //<TODO>
 
 
-    // In each 100 ticks, 
-    
+    // In each 100 ticks,   
     // 1. Update Priority
-    if(kernel->stats->totalTicks%400==0)
-        kernel->currentThread->setPriority(kernel->currentThread->getPriority()+10);
+        //wait more than 400ticks-> aging +10
+        //all update wait time??
 
     // 2. Update RunTime & RRTime
-    kernel->currentThread->setRunTime(kernel->stats->userTicks);
-
     // 3. Check Round Robin
+
+    //this method evoke each TimerTicks -> TimerTicks = 100
+
+    
+    kernel->scheduler->UpdatePriority();
+    if(status != IdleMode ){
+        kernel->currentThread->setRunTime(kernel->currentThread->getRunTime()+100); // when userTick reset??
+
+        if( kernel->currentThread->getPriority() < 50){// in L3
+        
+            if(kernel->currentThread->getRunTime()){
+
+            }
+        }
+    }
 
     //<TODO>
     

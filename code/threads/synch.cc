@@ -77,8 +77,7 @@ Semaphore::getName()
 //	when it is called.
 //----------------------------------------------------------------------
 
-void
-Semaphore::P()
+void Semaphore::P()
 {
     Interrupt *interrupt = kernel->interrupt;
     Thread *currentThread = kernel->currentThread;
