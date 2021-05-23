@@ -324,38 +324,40 @@ Scheduler::UpdatePriority()
 {
 
     ListIterator<Thread *> *it3 = new ListIterator<Thread *>(L3ReadyQueue);
-    // ListIterator<Thread *> *it2 = new ListIterator<Thread *>(L2ReadyQueue);
-    // ListIterator<Thread *> *it1 = new ListIterator<Thread *>(L1ReadyQueue); 
+    ListIterator<Thread *> *it2 = new ListIterator<Thread *>(L2ReadyQueue);
+    ListIterator<Thread *> *it1 = new ListIterator<Thread *>(L1ReadyQueue); 
+
+    ListIterator<Thread *> *it4 = new ListIterator<Thread *>(L3ReadyQueue);
+    ListIterator<Thread *> *it5 = new ListIterator<Thread *>(L2ReadyQueue);
     //update waiting time
     for( ; !it3->IsDone(); it3->Next() ){
-        it3->current->setWaitingTime(   it3->current->getWaitingTime()+100 );
-        if(it3->current->getWaitingTime() %400 ==0){
-            it3->current->setPriority(it3->current->getPriority()+10);
+        it3->item()->setWaitingTime(   it3->item()->getWaitingTime()+100 );
+        if(it3->item()->getWaitingTime() %400 ==0){
+            it3->item()->setPriority(it3->item()->getPriority()+10);
         }
     }
-    it3->current = L2ReadyQueue->first;
 
-    for( ; !it3->IsDone(); it3->Next() ){
-        it3->current->setWaitingTime(   it3->current->getWaitingTime()+100 );
-        if(it3->current->getWaitingTime() %400 ==0){
-            it3->current->setPriority(it3->current->getPriority()+10);
+    for( ; !it2->IsDone(); it2->Next() ){
+        it2->item()->setWaitingTime(   it2->item()->getWaitingTime()+100 );
+        if(it2->item()->getWaitingTime() %400 ==0){
+            it2->item()->setPriority(it2->item()->getPriority()+10);
         }
     }    
 
-    it3->current = L1ReadyQueue->first;
-    for( ; !it3->IsDone(); it3->Next() ){
-        it3->current->setWaitingTime(   it3->current->getWaitingTime()+100 );
-        if(it3->current->getWaitingTime() %400 ==0){
-            it3->current->setPriority(it3->current->getPriority()+10>149 ? 149:it3->current->getPriority()+10);
+
+    for( ; !it1->IsDone(); it1->Next() ){
+        it1->item()->setWaitingTime(   it1->item()->getWaitingTime()+100 );
+        if(it1->item()->getWaitingTime() %400 ==0){
+            it1->item()->setPriority(it1->item()->getPriority()+10>149 ? 149:it1->item()->getPriority()+10);
         }
     }
     Thread * curr;
-    it3->current = L3ReadyQueue ->first;
+    //it3->item() = L3ReadyQueue ->first;
 
-    for( ; !it3->IsDone(); it3->Next() ){
-        if(it3->current->getPriority() >=50){
-            curr = it3->current;
-            it3->Next();
+    for( ; !it4->IsDone(); it4->Next() ){
+        if(it4->item()->getPriority() >=50){
+            curr = it4->item();
+            it4->Next();
             L3ReadyQueue->Remove(curr);
             DEBUG('z', "[RemoveFromQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is removed from queue L[3]");
             L2ReadyQueue->Insert(curr);
@@ -364,11 +366,11 @@ Scheduler::UpdatePriority()
     }
 
     //sortL2();
-    it3->current = L2ReadyQueue->first;
-    for( ; !it3->IsDone(); it3->Next() ){
-        if(it3->current->getPriority() >=100){
-            curr = it3->current;
-            it3->Next();
+    //it3->item() = L2ReadyQueue->first;
+    for( ; !it5->IsDone(); it5->Next() ){
+        if(it5->item()->getPriority() >=100){
+            curr = it5->item();
+            it5->Next();
             L2ReadyQueue->Remove(curr);
             DEBUG('z', "[RemoveFromQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is removed from queue L[2]");
             L1ReadyQueue->Insert(curr);
