@@ -331,23 +331,23 @@ Scheduler::UpdatePriority()
     ListIterator<Thread *> *it5 = new ListIterator<Thread *>(L2ReadyQueue);
     //update waiting time
     for( ; !it3->IsDone(); it3->Next() ){
-        it3->Item()->setWaitingTime(   it3->Item()->getWaitingTime()+100 );
-        if(it3->Item()->getWaitingTime() %400 ==0){
+        it3->Item()->setWaitTime(   it3->Item()->getWaitTime()+100 );
+        if(it3->Item()->getWaitTime() %400 ==0){
             it3->Item()->setPriority(it3->Item()->getPriority()+10);
         }
     }
 
     for( ; !it2->IsDone(); it2->Next() ){
-        it2->Item()->setWaitingTime(   it2->Item()->getWaitingTime()+100 );
-        if(it2->Item()->getWaitingTime() %400 ==0){
+        it2->Item()->setWaitTime(   it2->Item()->getWaitTime()+100 );
+        if(it2->Item()->getWaitTime() %400 ==0){
             it2->Item()->setPriority(it2->Item()->getPriority()+10);
         }
     }    
 
 
     for( ; !it1->IsDone(); it1->Next() ){
-        it1->Item()->setWaitingTime(   it1->Item()->getWaitingTime()+100 );
-        if(it1->Item()->getWaitingTime() %400 ==0){
+        it1->Item()->setWaitTime(   it1->Item()->getWaitTime()+100 );
+        if(it1->Item()->getWaitTime() %400 ==0){
             it1->Item()->setPriority(it1->Item()->getPriority()+10>149 ? 149:it1->Item()->getPriority()+10);
         }
     }
