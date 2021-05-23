@@ -220,17 +220,18 @@ Thread::Yield ()
 
         // change order to 1-1 on repo
     nextThread = kernel->scheduler->FindNextToRun();
-       
+    
     if(nextThread!=NULL) 
     {   
             kernel->scheduler->ReadyToRun(this);
             //update remaining_burst_time
-            DEBUG('z', "[UpdateRemainingBurstTime] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << this->getID() <<"] update
-remaining burst time, from: [" << this->getRemainingBurstTime()<<"] - ["<<this->getRunTime() <<"], to ["<<this->getRemainingBurstTime() - this->getRunTime()<<"]");
+            cout<<"in Yeild()"<<endl;
+            DEBUG('z', "[UpdateRemainingBurstTime] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << this->getID() <<"] update remaining burst time, from: [" << this->getRemainingBurstTime()<<"] - ["<<this->getRunTime() <<"], to ["<<this->getRemainingBurstTime() - this->getRunTime()<<"]");
             this->setRemainingBurstTime(this->getRemainingBurstTime() - this->getRunTime());
             // rrtime????wait time??        
             //set run time
             this->setRunTime(0);
+            nextThread->setWaitTime(0);
 	        kernel->scheduler->Run(nextThread, !this->getRemainingBurstTime()>0); //uncertain
     }
 
@@ -297,8 +298,8 @@ Thread::Sleep (bool finishing)
 	//         kernel->scheduler->Run(nextThread, FALSE); //uncertain
     // }
     int prevrunTime = this->getRunTime();
-    DEBUG('z', "[UpdateRemainingBurstTime] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << this->getID() <<"] update
-remaining burst time, from: [" << this->getRemainingBurstTime()<<"] - ["<<this->getRunTime() <<"], to ["<<this->getRemainingBurstTime() - this->getRunTime()<<"]");
+     cout<<"in Sleep()"<<endl;
+    DEBUG('z', "[UpdateRemainingBurstTime] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << this->getID() <<"] update remaining burst time, from: [" << this->getRemainingBurstTime()<<"] - ["<<this->getRunTime() <<"], to ["<<this->getRemainingBurstTime() - this->getRunTime()<<"]");
             
     if(finishing){
         this->setRemainingBurstTime(0);
@@ -309,7 +310,7 @@ remaining burst time, from: [" << this->getRemainingBurstTime()<<"] - ["<<this->
     //context switch should print something
     DEBUG('z', "[ContextSwitch] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << nextThread->getID() <<"] is now selected for execution");
 
-
+    nextThread->set_WaitTime(0);
     kernel->scheduler->Run(nextThread, finishing);
     //<TODO ?>
 }
