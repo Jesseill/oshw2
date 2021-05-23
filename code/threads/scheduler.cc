@@ -331,32 +331,32 @@ Scheduler::UpdatePriority()
     ListIterator<Thread *> *it5 = new ListIterator<Thread *>(L2ReadyQueue);
     //update waiting time
     for( ; !it3->IsDone(); it3->Next() ){
-        it3->item()->setWaitingTime(   it3->item()->getWaitingTime()+100 );
-        if(it3->item()->getWaitingTime() %400 ==0){
-            it3->item()->setPriority(it3->item()->getPriority()+10);
+        it3->Item()->setWaitingTime(   it3->Item()->getWaitingTime()+100 );
+        if(it3->Item()->getWaitingTime() %400 ==0){
+            it3->Item()->setPriority(it3->Item()->getPriority()+10);
         }
     }
 
     for( ; !it2->IsDone(); it2->Next() ){
-        it2->item()->setWaitingTime(   it2->item()->getWaitingTime()+100 );
-        if(it2->item()->getWaitingTime() %400 ==0){
-            it2->item()->setPriority(it2->item()->getPriority()+10);
+        it2->Item()->setWaitingTime(   it2->Item()->getWaitingTime()+100 );
+        if(it2->Item()->getWaitingTime() %400 ==0){
+            it2->Item()->setPriority(it2->Item()->getPriority()+10);
         }
     }    
 
 
     for( ; !it1->IsDone(); it1->Next() ){
-        it1->item()->setWaitingTime(   it1->item()->getWaitingTime()+100 );
-        if(it1->item()->getWaitingTime() %400 ==0){
-            it1->item()->setPriority(it1->item()->getPriority()+10>149 ? 149:it1->item()->getPriority()+10);
+        it1->Item()->setWaitingTime(   it1->Item()->getWaitingTime()+100 );
+        if(it1->Item()->getWaitingTime() %400 ==0){
+            it1->Item()->setPriority(it1->Item()->getPriority()+10>149 ? 149:it1->Item()->getPriority()+10);
         }
     }
     Thread * curr;
-    //it3->item() = L3ReadyQueue ->first;
+    //it3->Item() = L3ReadyQueue ->first;
 
     for( ; !it4->IsDone(); it4->Next() ){
-        if(it4->item()->getPriority() >=50){
-            curr = it4->item();
+        if(it4->Item()->getPriority() >=50){
+            curr = it4->Item();
             it4->Next();
             L3ReadyQueue->Remove(curr);
             DEBUG('z', "[RemoveFromQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is removed from queue L[3]");
@@ -366,10 +366,10 @@ Scheduler::UpdatePriority()
     }
 
     //sortL2();
-    //it3->item() = L2ReadyQueue->first;
+    //it3->Item() = L2ReadyQueue->first;
     for( ; !it5->IsDone(); it5->Next() ){
-        if(it5->item()->getPriority() >=100){
-            curr = it5->item();
+        if(it5->Item()->getPriority() >=100){
+            curr = it5->Item();
             it5->Next();
             L2ReadyQueue->Remove(curr);
             DEBUG('z', "[RemoveFromQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is removed from queue L[2]");
