@@ -177,14 +177,17 @@ Thread *Scheduler::FindNextToRun ()
     if(!L1ReadyQueue->IsEmpty()){
         next = L1ReadyQueue->Front();
         L1ReadyQueue->RemoveFront();
+        DEBUG('z', "[RemoveFromQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << next->getID() <<"] is removed from queue L[1]");
         return next;
     }else if(!L2ReadyQueue->IsEmpty()){
         next = L2ReadyQueue->Front();
         L2ReadyQueue->RemoveFront();
+        DEBUG('z', "[RemoveFromQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << next->getID() <<"] is removed from queue L[2]");
         return next;
     }else if(!L3ReadyQueue->IsEmpty()){ //RoundRobin??
         next = L3ReadyQueue->Front();
         L3ReadyQueue->RemoveFront();
+        DEBUG('z', "[RemoveFromQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << next->getID() <<"] is removed from queue L[3]");
         return next;
     }
     return next;
@@ -354,7 +357,9 @@ Scheduler::UpdatePriority()
             curr = it3->current;
             it3->Next();
             L3ReadyQueue->Remove(curr);
+            DEBUG('z', "[RemoveFromQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is removed from queue L[3]");
             L2ReadyQueue->Insert(curr);
+            DEBUG('z', "[InsertToQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is inserted into queue L[2]");
         }
     }
 
@@ -365,7 +370,9 @@ Scheduler::UpdatePriority()
             curr = it3->current;
             it3->Next();
             L2ReadyQueue->Remove(curr);
+            DEBUG('z', "[RemoveFromQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is removed from queue L[2]");
             L1ReadyQueue->Insert(curr);
+            DEBUG('z', "[InsertToQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is inserted into queue L[1]");
         }
     
     }

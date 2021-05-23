@@ -225,11 +225,13 @@ Thread::Yield ()
     {   
             kernel->scheduler->ReadyToRun(this);
             //update remaining_burst_time
+            DEBUG('z', "[UpdateRemainingBurstTime] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << this->getID() <<"] update
+remaining burst time, from: [" << this->getRemainingBurstTime()<<"] - ["<<this->getRunTime() <<"], to ["<<this->getRemainingBurstTime() - this->getRunTime()<<"]");
             this->setRemainingBurstTime(this->getRemainingBurstTime() - this->getRunTime());
             // rrtime????wait time??        
             //set run time
             this->setRunTime(0);
-	        kernel->scheduler->Run(nextThread, !this->getRemainingBurstTime()); //uncertain
+	        kernel->scheduler->Run(nextThread, !this->getRemainingBurstTime()>0); //uncertain
     }
 
     
@@ -276,22 +278,40 @@ Thread::Sleep (bool finishing)
     while ((nextThread = kernel->scheduler->FindNextToRun()) == NULL)
 	    kernel->interrupt->Idle();	// no one to run, wait for an interruptd
 
-    //<TODO>
+    //<TODO ?>
     // In Thread::Sleep(finishing), we put the current_thread to waiting or terminated state (depend on finishing)
     // , and determine finishing on Scheduler::Run(nextThread, finishing), not here.
     // 1. Update RemainingBurstTime
     // 2. Reset some value of current_thread, then context switch
-    
+    // int currRunTime = this->getRunTime();
+    // if(currRunTime > 0) { //means the process is still in running, hints from ilms forum
+    //     int worktime = kernel->stats->userTicks - currRunTime;
+    //     this->setRemainingBurstTime(this->getRemainingBurstTime() + worktime);
+    // }
 
-
-
+    // // 2. Reset some value of current_thread, then context switch
+    // if(nextThread!=NULL) 
+    // {
+    //     	//kernel->scheduler->ReadyToRun(this);
+    //         this->setRunTime(0);
+	//         kernel->scheduler->Run(nextThread, FALSE); //uncertain
+    // }
+    int prevrunTime = this->getRunTime();
+    DEBUG('z', "[UpdateRemainingBurstTime] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << this->getID() <<"] update
+remaining burst time, from: [" << this->getRemainingBurstTime()<<"] - ["<<this->getRunTime() <<"], to ["<<this->getRemainingBurstTime() - this->getRunTime()<<"]");
+            
+    if(finishing){
+        this->setRemainingBurstTime(0);
+    }else{      
+        this->setRemainingBurstTime(this->getRemainingBurstTime()-this->getRunTime());
+    }
 
     //context switch should print something
-
+    DEBUG('z', "[ContextSwitch] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << nextThread->getID() <<"] is now selected for execution");
 
 
     kernel->scheduler->Run(nextThread, finishing);
-    //<TODO>
+    //<TODO ?>
 }
 
 //----------------------------------------------------------------------
