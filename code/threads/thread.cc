@@ -223,16 +223,18 @@ Thread::Yield ()
     
     if(nextThread!=NULL) 
     {   
+            DEBUG('z', "[ContextSwitch] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << nextThread->getID() <<"] is now selected for execution"); //powder
             kernel->scheduler->ReadyToRun(this);
             //update remaining_burst_time
             cout<<"in Yeild()"<<endl;
-            DEBUG('z', "[UpdateRemainingBurstTime] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << this->getID() <<"] update remaining burst time, from: [" << this->getRemainingBurstTime()<<"] - ["<<this->getRunTime() <<"], to ["<<this->getRemainingBurstTime() - this->getRunTime()<<"]");
-            this->setRemainingBurstTime(this->getRemainingBurstTime() - this->getRunTime());
+	    //remarked by powder
+            //DEBUG('z', "[UpdateRemainingBurstTime] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << this->getID() <<"] update remaining burst time, from: [" << this->getRemainingBurstTime()<<"] - ["<<this->getRunTime() <<"], to ["<<this->getRemainingBurstTime() - this->getRunTime()<<"]");
+            //this->setRemainingBurstTime(this->getRemainingBurstTime() - this->getRunTime());
             // rrtime????wait time??        
             //set run time
             this->setRunTime(0);
             nextThread->setWaitTime(0);
-	        kernel->scheduler->Run(nextThread, !this->getRemainingBurstTime()>0); //uncertain
+	    kernel->scheduler->Run(nextThread, FALSE); //powder
     }
 
     
@@ -299,19 +301,24 @@ Thread::Sleep (bool finishing)
     // }
     int prevrunTime = this->getRunTime();
      cout<<"in Sleep()"<<endl;
+    
     DEBUG('z', "[UpdateRemainingBurstTime] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << this->getID() <<"] update remaining burst time, from: [" << this->getRemainingBurstTime()<<"] - ["<<this->getRunTime() <<"], to ["<<this->getRemainingBurstTime() - this->getRunTime()<<"]");
-            
-    if(finishing){
-        this->setRemainingBurstTime(0);
-    }else{      
-        this->setRemainingBurstTime(this->getRemainingBurstTime()-this->getRunTime());
+    if(nextThread!=this) {    
+        DEBUG('z', "[ContextSwitch] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << nextThread->getID() <<"] is now selected for execution");
+    	if(finishing){//powder
+    		DEBUG('z', "[UpdateRemainingBurstTime] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << this->getID() <<"] update remaining burst time, from: [" << this->getRemainingBurstTime()<<"] - ["<<this->getRunTime() <<"], to ["<<this->getRemainingBurstTime() - this->getRunTime()<<"]");
+        	this->setRemainingBurstTime(0);
+    	}else{      
+    		DEBUG('z', "[UpdateRemainingBurstTime] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << this->getID() <<"] update remaining burst time, from: [" << this->getRemainingBurstTime()<<"] - ["<<this->getRunTime() <<"], to ["<<this->getRemainingBurstTime() - this->getRunTime()<<"]");
+        	this->setRemainingBurstTime(this->getRemainingBurstTime()-this->getRunTime());
+		this->setRunTime(0); //powder, according to ilms forum
+    	}
+        nextThread->setWaitTime(0);
+        kernel->scheduler->Run(nextThread, finishing);
     }
 
     //context switch should print something
-    DEBUG('z', "[ContextSwitch] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << nextThread->getID() <<"] is now selected for execution");
 
-    nextThread->set_WaitTime(0);
-    kernel->scheduler->Run(nextThread, finishing);
     //<TODO ?>
 }
 

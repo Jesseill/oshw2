@@ -189,11 +189,14 @@ void ForkExecute(Thread *t)
     //<TODO DONE>
     // When Thread t goes to Running state in the first time, its file should be loaded & executed.
     // Hint: This function would not be called until Thread t is on running state.
-    if(t!=NULL && t->getName()!=NULL && t->space!=NULL)
-    {
-        t->space->Execute(t->getName());
-    }
 
+    //powder
+    if(!t->space->Load(t->getName()))
+    {
+	return;
+    }
+    
+    t->space->Execute(t->getName());
     //<TODO DONE>
 }
 
@@ -212,7 +215,7 @@ int UserProgKernel::InitializeOneThread(char* name, int priority, int burst_time
     t[threadNum]->setRRTime(0);//
     t[threadNum]->setRunTime(0);//
     t[threadNum]->setWaitTime(0);//
-
+    t[threadNum]->space = new AddrSpace(); //powder
     t[threadNum]->Fork((VoidFunctionPtr) &ForkExecute, (void *)t[threadNum]);
     
 

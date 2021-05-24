@@ -41,6 +41,18 @@ class Scheduler {
 	//<REPORT>
 	void UpdatePriority();
 	//<REPORT>
+	
+	SortedList<Thread* >* getL1() {
+		return L1ReadyQueue;
+	}
+
+	SortedList<Thread* >* getL2() {
+		return L2ReadyQueue;
+	}
+
+	List<Thread* >* getL3() {
+		return L3ReadyQueue;
+	}
 
     // SelfTest for scheduler is implemented in class Thread
     

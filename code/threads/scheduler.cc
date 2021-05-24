@@ -332,35 +332,48 @@ Scheduler::UpdatePriority()
     //update waiting time
     for( ; !it3->IsDone(); it3->Next() ){
         it3->Item()->setWaitTime(   it3->Item()->getWaitTime()+100 );
-        if(it3->Item()->getWaitTime() %400 ==0){
+        if(it3->Item()->getWaitTime() > 400){//powder
+	    DEBUG(dbgMLFQ, "[UpdatePriority] Tick ["<< kernel->stats->totalTicks << "]: Thread [" << it3->Item()->getID() <<"] changes its priority from ["<<it3->Item()->getPriority()<<"] to [" << it3->Item()->getPriority() + 10<< "]");
             it3->Item()->setPriority(it3->Item()->getPriority()+10);
+	    //it3->Item()->setWaitTime(0);//powder
         }
     }
 
     for( ; !it2->IsDone(); it2->Next() ){
         it2->Item()->setWaitTime(   it2->Item()->getWaitTime()+100 );
-        if(it2->Item()->getWaitTime() %400 ==0){
+        if(it2->Item()->getWaitTime() > 400 ){//powder
+	    DEBUG(dbgMLFQ, "[UpdatePriority] Tick ["<< kernel->stats->totalTicks << "]: Thread [" << it2->Item()->getID() <<"] changes its priority from ["<<it2->Item()->getPriority()<<"] to [" << it2->Item()->getPriority() + 10<< "]");
             it2->Item()->setPriority(it2->Item()->getPriority()+10);
+	    //it2->Item()->setWaitTime(0);//powder
         }
     }    
 
+    Thread * curr;
 
     for( ; !it1->IsDone(); it1->Next() ){
+        curr = it1->Item();//powder
         it1->Item()->setWaitTime(   it1->Item()->getWaitTime()+100 );
-        if(it1->Item()->getWaitTime() %400 ==0){
+        if(it1->Item()->getWaitTime() > 400 ){//powder
+	    it1->Item()->setWaitTime(0);//powder	
             it1->Item()->setPriority(it1->Item()->getPriority()+10>149 ? 149:it1->Item()->getPriority()+10);
+	    //powder
+	    DEBUG(dbgMLFQ, "[UpdatePriority] Tick ["<< kernel->stats->totalTicks << "]: Thread [" << it1->Item()->getID() <<"] changes its priority from ["<<it1->Item()->getPriority() - 10 <<"] to [" << it1->Item()->getPriority() << "]");
+            L1ReadyQueue->Remove(curr); 
+	    L1ReadyQueue->Insert(curr);
+            DEBUG('z', "[RemoveFromQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is removed from queue L[1]");
+            DEBUG('z', "[InsertToQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is inserted into queue L[1]");
         }
     }
-    Thread * curr;
     //it3->Item() = L3ReadyQueue ->first;
 
     for( ; !it4->IsDone(); it4->Next() ){
-        if(it4->Item()->getPriority() >=50){
             curr = it4->Item();
-            it4->Next();
+        if(it4->Item()->getPriority() >=50 && it4->Item()->getWaitTime() > 400){
+	    curr->setWaitTime(0);
+            //it4->Next();
             L3ReadyQueue->Remove(curr);
-            DEBUG('z', "[RemoveFromQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is removed from queue L[3]");
             L2ReadyQueue->Insert(curr);
+            DEBUG('z', "[RemoveFromQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is removed from queue L[3]");
             DEBUG('z', "[InsertToQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is inserted into queue L[2]");
         }
     }
@@ -368,22 +381,27 @@ Scheduler::UpdatePriority()
     //sortL2();
     //it3->Item() = L2ReadyQueue->first;
     for( ; !it5->IsDone(); it5->Next() ){
-        if(it5->Item()->getPriority() >=100){
             curr = it5->Item();
-            it5->Next();
+        if(it5->Item()->getPriority() >=100 && it5->Item()->getWaitTime() > 400){
+	    curr->setWaitTime(0);
+            //it5->Next();
             L2ReadyQueue->Remove(curr);
-            DEBUG('z', "[RemoveFromQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is removed from queue L[2]");
             L1ReadyQueue->Insert(curr);
-            DEBUG('z', "[InsertToQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is inserted into queue L[1]");
-        }
-    
+            DEBUG('z', "[RemoveFromQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is removed from queue L[2]");
+            DEBUG('z', "[InsertToQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is inserted into queue L[1]");    
+        }else if(it5->Item()->getPriority()<100 && it5->Item()->getWaitTime() > 400) {
+   	    L2ReadyQueue->Remove(curr);
+            DEBUG('z', "[RemoveFromQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is removed from queue L[2]");
+	    L2ReadyQueue->Insert(curr);
+            DEBUG('z', "[InsertToQueue] Tick [" << kernel->stats->totalTicks << "]: Thread:[" << curr->getID() <<"] is inserted into queue L[2]");    
+	}
     }
 
 
     //sortL1(); //preemption
-    if(L1ReadyQueue->Front()!=kernel->currentThread){
+    /*if(L1ReadyQueue->Front()!=kernel->currentThread){
         kernel->interrupt->YieldOnReturn();
-    }
+    }*/
 
 
 
